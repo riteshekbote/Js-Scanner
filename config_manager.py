@@ -8,7 +8,7 @@ class ConfigManager:
 
     @classmethod
     def _clean_value(cls, value):
-        """去除行内注释（#后面的内容）并去除首尾空格"""
+        """Strip inline comments (# onwards) and surrounding whitespace"""
         if not isinstance(value, str):
             return value
         sharp_pos = value.find('#')
@@ -23,14 +23,14 @@ class ConfigManager:
             if os.path.exists(CONFIG_FILE):
                 config.read(CONFIG_FILE, encoding='utf-8')
             else:
-                raise FileNotFoundError(f"配置文件 {CONFIG_FILE} 不存在，请创建 config.ini")
+                raise FileNotFoundError(f"Config file {CONFIG_FILE} not found, please create config.ini")
             cls._config = config
         return cls._config
 
     @classmethod
     def get_ai_config(cls):
         config = cls.load_config()
-        # 获取原始值并清理注释
+        # Get raw values and strip comments
         api_base_raw = config.get('AI', 'api_base', fallback='https://api.deepseek.com')
         api_key_raw = config.get('AI', 'api_key', fallback='')
         model_raw = config.get('AI', 'model', fallback='deepseek-chat')
@@ -45,7 +45,7 @@ class ConfigManager:
         max_tokens_str = cls._clean_value(max_tokens_raw)
         min_conf_str = cls._clean_value(min_conf_raw)
 
-        # 安全转换
+        # Safe conversion
         try:
             temperature = float(temperature_str) if temperature_str else 0.1
         except ValueError:

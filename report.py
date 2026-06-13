@@ -1,6 +1,6 @@
 """
-模块：report.py
-功能：生成详细的HTML审计报告，支持查看代码上下文、一键复制、展开/收起全部
+Module: report.py
+Purpose: Generate a detailed HTML audit report with code context, one-click copy, expand/collapse all
 """
 from jinja2 import Template
 from datetime import datetime
@@ -8,7 +8,7 @@ import re
 import os
 
 def sanitize_filename(url):
-    """从URL生成合法的文件名"""
+    """Generate a valid filename from a URL"""
     name = re.sub(r'^https?://', '', url)
     name = re.sub(r'[^\w\-_\.]', '_', name)
     if len(name) > 100:
@@ -16,7 +16,7 @@ def sanitize_filename(url):
     return name
 
 def generate_html_report(all_results, target_url, output_dir="reports"):
-    """生成HTML报告，包含完整细节和交互功能"""
+    """Generate HTML report with full details and interactive features"""
     os.makedirs(output_dir, exist_ok=True)
 
     total_files = len(all_results)
@@ -37,11 +37,11 @@ def generate_html_report(all_results, target_url, output_dir="reports"):
 
     template_str = """
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JS安全审计报告 - {{ target_url }}</title>
+    <title>JS Security Audit Report - {{ target_url }}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; background: #f0f2f5; padding: 20px; }
@@ -142,30 +142,30 @@ def generate_html_report(all_results, target_url, output_dir="reports"):
 <body>
 <div class="container">
     <div class="header">
-        <h1>🔒 JS安全审计报告</h1>
-        <div class="url">目标: {{ target_url }}</div>
-        <div class="time">生成时间: {{ now }}</div>
+        <h1>🔒 JS Security Audit Report</h1>
+        <div class="url">Target: {{ target_url }}</div>
+        <div class="time">Generated: {{ now }}</div>
     </div>
     
     <div class="stats-grid">
-        <div class="stat-card"><div class="number">{{ total_files }}</div><div class="label">扫描文件数</div></div>
+        <div class="stat-card"><div class="number">{{ total_files }}</div><div class="label">Files Scanned</div></div>
         <div class="stat-card">
             <div class="number">{{ total_findings }}</div>
-            <div class="label">发现泄露数</div>
+            <div class="label">Findings</div>
             {% if total_findings > 0 %}
             <div class="button-group">
-                <button class="copy-btn" id="copyAllBtn">📋 复制所有发现</button>
-                <button class="copy-btn copy-api-btn" id="copyApiBtn">🌐 复制 API 接口</button>
+                <button class="copy-btn" id="copyAllBtn">📋 Copy All Findings</button>
+                <button class="copy-btn copy-api-btn" id="copyApiBtn">🌐 Copy API Endpoints</button>
             </div>
             {% endif %}
         </div>
-        <div class="stat-card"><div class="number">{{ risk_stats.critical }}</div><div class="label">严重风险</div></div>
-        <div class="stat-card"><div class="number">{{ risk_stats.high }}</div><div class="label">高危风险</div></div>
+        <div class="stat-card"><div class="number">{{ risk_stats.critical }}</div><div class="label">Critical Risk</div></div>
+        <div class="stat-card"><div class="number">{{ risk_stats.high }}</div><div class="label">High Risk</div></div>
     </div>
     
     {% if type_stats %}
     <div class="stat-card" style="margin-bottom: 20px;">
-        <div class="label">泄露类型分布</div>
+        <div class="label">Leak Type Distribution</div>
         <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 10px;">
             {% for type, count in type_stats.items() %}
             <span style="background: #e9ecef; padding: 4px 12px; border-radius: 20px; font-size: 13px;">{{ type }}: {{ count }}</span>
@@ -175,10 +175,10 @@ def generate_html_report(all_results, target_url, output_dir="reports"):
     {% endif %}
     
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h3 style="margin: 0;">📁 详细分析结果</h3>
+        <h3 style="margin: 0;">📁 Detailed Analysis Results</h3>
         <div>
-            <button class="copy-btn expand-btn" id="expandAllBtn">📂 展开全部</button>
-            <button class="copy-btn expand-btn" id="collapseAllBtn">📁 收起全部</button>
+            <button class="copy-btn expand-btn" id="expandAllBtn">📂 Expand All</button>
+            <button class="copy-btn expand-btn" id="collapseAllBtn">📁 Collapse All</button>
         </div>
     </div>
     
@@ -186,20 +186,20 @@ def generate_html_report(all_results, target_url, output_dir="reports"):
     <div class="file-card">
         <div class="file-header" onclick="toggleFile(this)">
             <span class="file-name">📄 {{ item.file_name }}</span>
-            <span class="file-badge">{{ item.findings|length }} 处发现</span>
+            <span class="file-badge">{{ item.findings|length }} findings</span>
         </div>
         <div class="file-content">
             {% if item.findings %}
             <table class="findings-table">
                 <thead>
-                    <tr><th>类型</th><th>泄露内容</th><th>代码上下文</th><th>风险等级</th><th>修复建议</th><th>置信度</th></tr>
+                    <tr><th>Type</th><th>Leaked Content</th><th>Code Context</th><th>Risk Level</th><th>Remediation</th><th>Confidence</th></tr>
                 </thead>
                 <tbody>
                     {% for finding in item.findings %}
                     <tr data-type="{{ finding.type }}" data-value="{{ finding.value }}" data-risk="{{ finding.risk_level }}">
                         <td><strong>{{ finding.type }}</strong></td>
                         <td><code class="finding-value">{{ finding.value }}</code></td>
-                        <td class="line-context">{{ finding.line_context|default('位置未知') }}</td>
+                        <td class="line-context">{{ finding.line_context|default('Unknown position') }}</td>
                         <td><span class="risk-{{ finding.risk_level }}">{{ finding.risk_level | upper }}</span></td>
                         <td class="suggestion">{{ finding.suggestion }}</td>
                         <td>{{ (finding.confidence * 100)|int }}%</td>
@@ -208,19 +208,19 @@ def generate_html_report(all_results, target_url, output_dir="reports"):
                 </tbody>
             </table>
             {% else %}
-            <div class="no-findings">未发现敏感信息泄露</div>
+            <div class="no-findings">No sensitive information leaked</div>
             {% endif %}
         </div>
     </div>
     {% endfor %}
     
     <div class="footer">
-        <p>报告由 JS安全审计Agent 自动生成 | AI分析可能存在误报，请人工复核确认</p>
-        <p style="margin-top: 5px;">⚠️ 建议及时处理发现的敏感信息泄露问题</p>
+        <p>Report generated by JS Security Audit Agent | AI analysis may contain false positives, please manually verify</p>
+        <p style="margin-top: 5px;">⚠️ It is recommended to address any discovered sensitive information leaks promptly</p>
     </div>
 </div>
 
-<div id="toast" class="toast">已复制到剪贴板</div>
+<div id="toast" class="toast">Copied to clipboard</div>
 
 <script>
 function toggleFile(header) {
@@ -245,14 +245,14 @@ function collapseAll() {
 function copyToClipboard(text, successMsg) {
     navigator.clipboard.writeText(text).then(function() {
         var toast = document.getElementById('toast');
-        toast.textContent = successMsg || '已复制到剪贴板';
+        toast.textContent = successMsg || 'Copied to clipboard';
         toast.classList.add('show');
         setTimeout(function() {
             toast.classList.remove('show');
         }, 2000);
     }).catch(function(err) {
-        console.error('复制失败: ', err);
-        alert('复制失败，请手动选中复制');
+        console.error('Copy failed: ', err);
+        alert('Copy failed, please manually select and copy');
     });
 }
 
@@ -263,15 +263,15 @@ function copyAllFindings() {
         var type = row.cells[0]?.innerText.trim() || '';
         var value = row.cells[1]?.innerText.trim() || '';
         var risk = row.cells[3]?.innerText.trim() || '';
-        if (value && value !== '未发现敏感信息泄露') {
+        if (value && value !== 'No sensitive information leaked') {
             findings.push(`${type}\t${value}\t${risk}`);
         }
     });
     if (findings.length === 0) {
-        alert('没有可复制的发现');
+        alert('Nothing to copy');
         return;
     }
-    copyToClipboard(findings.join('\\n'), '已复制 ' + findings.length + ' 条发现');
+    copyToClipboard(findings.join('\\n'), 'Copied ' + findings.length + ' findings');
 }
 
 function copyApiEndpoints() {
@@ -285,10 +285,10 @@ function copyApiEndpoints() {
         }
     });
     if (apiList.length === 0) {
-        alert('未发现 API 接口信息');
+        alert('No API endpoints found');
         return;
     }
-    copyToClipboard(apiList.join('\\n'), '已复制 ' + apiList.length + ' 个 API 接口');
+    copyToClipboard(apiList.join('\\n'), 'Copied ' + apiList.length + ' API endpoints');
 }
 
 document.addEventListener('DOMContentLoaded', function() {

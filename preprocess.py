@@ -1,11 +1,11 @@
 """
-模块：preprocess.py
-功能：从JS代码中提取所有字符串字面量
+Module: preprocess.py
+Purpose: Extract all string literals from JS code
 """
 import re
 
 def extract_string_literals(js_code, max_len=8000):
-    """提取JS中的所有字符串，合并后返回"""
+    """Extract all strings from JS, combine and return"""
     pattern = re.compile(r'(["\'])(?:(?=(\\?))\2.)*?\1|`[^`]*`', re.DOTALL)
     matches = pattern.findall(js_code)
 
@@ -24,5 +24,5 @@ def extract_string_literals(js_code, max_len=8000):
     result = "\n".join(unique)
 
     if len(result) > max_len:
-        result = result[:max_len] + "\n... (内容过长已截断)"
+        result = result[:max_len] + "\n... (content too long, truncated)"
     return result

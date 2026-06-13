@@ -1,6 +1,6 @@
 """
-主程序：JS安全审计Agent v5.0
-支持审计后对话模式，对话中可输入新网址继续扫描
+Main program: JS Security Audit Agent v5.0
+Supports post-audit dialog mode, can scan new URLs directly from within the dialog
 """
 import sys
 import os
@@ -32,21 +32,21 @@ class JSSecurityAuditAgent:
 
     def print_header(self):
         print("\n" + "=" * 80)
-        print("🛡️  JS安全审计Agent v5.0 - 渗透测试辅助工具")
+        print("🛡️  JS Security Audit Agent v5.0 - Penetration Testing Assistant")
         print("=" * 80)
-        print("功能：抓取网站JS文件，AI分析敏感信息（API/密钥/手机号/内网IP等）")
-        print("     生成HTML报告，支持对话模式，可在对话中直接输入新网址续扫")
+        print("Features: Crawl website JS files, AI analysis of sensitive info (API/keys/phone numbers/internal IPs, etc.)")
+        print("     Generate HTML reports, support dialog mode, scan new URLs directly from within dialog")
         print("=" * 80)
 
     def print_help(self):
-        print("\n📖 使用说明:")
-        print("   • 直接输入网址开始审计")
-        print("   • 审计完成后自动进入对话模式")
-        print("   • 对话中可继续提问，也可直接输入新网址进行扫描")
-        print("   • 命令: exit退出, help帮助, clear清屏, history历史")
-        print("\n💡 示例:")
+        print("\n📖 Instructions:")
+        print("   • Enter a URL to start an audit")
+        print("   • After audit completes, automatically enters dialog mode")
+        print("   • In dialog, you can ask follow-up questions or paste a new URL to scan")
+        print("   • Commands: exit quit, help, clear, history")
+        print("\n💡 Examples:")
         print("   • https://example.com")
-        print("   • 帮我审计一下 baidu.com")
+        print("   • audit baidu.com")
 
     def extract_url(self, text):
         patterns = [r'https?://[^\s<>"{}|\\^`\[\]]+', r'\b(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}\b']
@@ -60,36 +60,36 @@ class JSSecurityAuditAgent:
         return None
 
     def analyze_website(self, target_url):
-        print(f"\n🎯 开始审计: {target_url}")
+        print(f"\n🎯 Starting audit: {target_url}")
         print(f"⏰ {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print("-" * 80)
 
         root_domain = get_root_domain(target_url)
-        print(f"🔍 当前站点根域名: {root_domain} (将自动过滤第三方API)")
+        print(f"🔍 Current site root domain: {root_domain} (will auto-filter third-party APIs)")
 
-        # 抓取JS
-        print("\n📡 [1/4] 抓取所有JS文件链接...")
+        # Crawl JS
+        print("\n📡 [1/4] Crawling all JS file links...")
         try:
             js_urls = get_all_js_urls(target_url)
-            print(f"   ✅ 发现 {len(js_urls)} 个JS文件")
+            print(f"   ✅ Found {len(js_urls)} JS files")
         except Exception as e:
-            print(f"   ❌ 抓取失败: {e}")
+            print(f"   ❌ Crawl failed: {e}")
             return None
         if not js_urls:
-            print("   ⚠️ 未发现任何JS文件")
+            print("   ⚠️ No JS files found")
             return None
 
-        # 下载
-        print("\n💾 [2/4] 下载JS文件到本地...")
+        # Download
+        print("\n💾 [2/4] Downloading JS files locally...")
         domain = re.sub(r'[^a-zA-Z0-9]', '_', target_url)[:50]
         cache_dir = os.path.join(CACHE_BASE_DIR, domain)
         js_files = download_js_files(js_urls, output_dir=cache_dir)
-        print(f"   ✅ 成功下载 {len(js_files)}/{len(js_urls)} 个文件")
+        print(f"   ✅ Successfully downloaded {len(js_files)}/{len(js_urls)} files")
         if not js_files:
             return None
 
-        # AI分析
-        print("\n🤖 [3/4] AI正在分析每个JS文件...")
+        # AI analysis
+        print("\n🤖 [3/4] AI is analyzing each JS file...")
         all_results = []
         total_js_size = 0
         for idx, js_file in enumerate(js_files, 1):
@@ -107,22 +107,22 @@ class JSSecurityAuditAgent:
                     "findings": result.get("findings", [])
                 })
             except Exception as e:
-                print(f"\n   ❌ 分析失败 {js_file}: {e}")
+                print(f"\n   ❌ Analysis failed {js_file}: {e}")
                 all_results.append({"file": js_file, "file_name": os.path.basename(js_file), "size": 0, "findings": []})
 
-        # 生成报告
-        print("\n📄 [4/4] 生成HTML报告...")
+        # Generate report
+        print("\n📄 [4/4] Generating HTML report...")
         os.makedirs(REPORT_DIR, exist_ok=True)
         report_file = generate_html_report(all_results, target_url, output_dir=REPORT_DIR)
-        print(f"   ✅ 报告已生成: {report_file}")
+        print(f"   ✅ Report generated: {report_file}")
 
-        # 统计
+        # Stats
         total_findings = sum(len(r['findings']) for r in all_results)
         print("\n" + "=" * 80)
-        print("📊 审计完成")
-        print(f"   扫描文件数: {len(js_files)}")
-        print(f"   发现敏感信息: {total_findings} 处")
-        print(f"   报告位置: {report_file}")
+        print("📊 Audit Complete")
+        print(f"   Files scanned: {len(js_files)}")
+        print(f"   Sensitive info found: {total_findings}")
+        print(f"   Report location: {report_file}")
         print("=" * 80)
 
         return {
@@ -135,46 +135,46 @@ class JSSecurityAuditAgent:
 
     def show_history(self):
         if not self.history:
-            print("\n📭 暂无分析历史")
+            print("\n📭 No audit history")
         else:
-            print("\n📋 分析历史:")
+            print("\n📋 Audit History:")
             for i, item in enumerate(self.history, 1):
                 total = sum(len(r['findings']) for r in item['results'])
-                print(f"   {i}. {item['url']} - {total} 处发现 - {item['report']}")
+                print(f"   {i}. {item['url']} - {total} findings - {item['report']}")
 
     def run(self):
         self.print_header()
         self.print_help()
         while True:
             try:
-                user_input = input("\n" + "=" * 80 + "\n💬 你: ").strip()
+                user_input = input("\n" + "=" * 80 + "\n💬 You: ").strip()
                 if not user_input:
                     continue
                 cmd = user_input.lower()
-                if cmd in ['exit', '退出', 'quit', 'q']:
-                    print("\n👋 再见！")
+                if cmd in ['exit', 'quit', 'q']:
+                    print("\n👋 Goodbye!")
                     break
-                elif cmd in ['help', '帮助', 'h']:
+                elif cmd in ['help', 'h']:
                     self.print_help()
                     continue
-                elif cmd in ['clear', '清空', 'cls']:
+                elif cmd in ['clear', 'cls']:
                     os.system('cls' if os.name == 'nt' else 'clear')
                     self.print_header()
                     self.print_help()
                     continue
-                elif cmd in ['history', '历史']:
+                elif cmd in ['history']:
                     self.show_history()
                     continue
 
                 url = self.extract_url(user_input)
                 if not url:
-                    print("❌ 未识别到有效的URL地址")
+                    print("❌ No valid URL detected")
                     continue
 
-                print(f"\n🎯 目标网址: {url}")
-                confirm = input("确认开始审计？(y/n，直接回车默认y): ").strip().lower()
-                if confirm and confirm not in ['y', 'yes', '是']:
-                    print("⏸️ 已取消")
+                print(f"\n🎯 Target URL: {url}")
+                confirm = input("Start audit? (y/n, default y): ").strip().lower()
+                if confirm and confirm not in ['y', 'yes']:
+                    print("⏸️ Cancelled")
                     continue
 
                 result = self.analyze_website(url)
@@ -185,14 +185,14 @@ class JSSecurityAuditAgent:
                         'results': result['results'],
                         'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
                     })
-                    # 进入对话模式，并传递 scan_callback 以便对话中扫描新网址
+                    # Enter dialog mode with scan_callback for scanning new URLs within dialog
                     continue_analysis_dialog(result, scan_callback=self.analyze_website)
-                    print("\n回到主菜单...")
+                    print("\nBack to main menu...")
             except KeyboardInterrupt:
-                print("\n\n👋 用户中断，再见！")
+                print("\n\n👋 User interrupt, goodbye!")
                 break
             except Exception as e:
-                print(f"\n❌ 程序异常: {e}")
+                print(f"\n❌ Program error: {e}")
                 import traceback
                 traceback.print_exc()
 
