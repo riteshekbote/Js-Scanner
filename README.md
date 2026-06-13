@@ -10,10 +10,6 @@
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat">
   </p>
 
-  <br>
-
-  <img src="https://github.com/user-attachments/assets/50f77a03-3dff-4a04-b8f8-e31a59c8b790" width="700" alt="Js-Scanner Demo">
-
   <br><br>
   <p><b>🔍 Crawl · 🤖 Analyze · 📄 Report · 💬 Chat</b></p>
   <p><i>Let AI uncover the gold in your JS files — quietly and efficiently.</i></p>
@@ -125,9 +121,36 @@ python src/main.py https://example.com
 
 ## 📊 Report Preview
 
-| Stat Card | Findings Table |
-|-----------|---------------|
-| <img src="https://github.com/user-attachments/assets/3c7a93a8-b3e1-45a6-b859-f751a4807f85" width="400"> | <img src="https://github.com/user-attachments/assets/dd25e004-1bc6-4157-87a4-e3b711ea9e50" width="400"> |
+After a scan, you get an interactive HTML report that looks like this:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  🔒 JS Security Audit Report                                │
+│  Target: https://example.com                                │
+│  Generated: 2025-01-15 14:30:22                             │
+├────────────────┬────────────────┬──────────────┬────────────┤
+│ Files Scanned  │   Findings     │ Critical Risk│  High Risk │
+│      12        │      47        │      3       │     11     │
+├────────────────┴────────────────┴──────────────┴────────────┤
+│ Leak Type Distribution                                      │
+│  api_endpoint: 24   hardcoded_secret: 8   jwt_token: 6     │
+│  phone_number: 5    internal_ip: 3        email: 1          │
+├─────────────────────────────────────────────────────────────┤
+│ 📁 Detailed Analysis Results                                │
+│                                                             │
+│ 📄 app.bundle.js                          ⚠️ 8 findings     │
+│ ┌─────────┬────────────────────┬──────────────────┬────────┐│
+│ │  Type   │ Leaked Content     │ Code Context     │ Risk   ││
+│ ├─────────┼────────────────────┼──────────────────┼────────┤│
+│ │ api_ep  │ /api/admin/users   │ line 142: url:   │ HIGH   ││
+│ │ hardc…  │ sk_live_xxxxxxxx   │ line 67: secret  │ CRIT   ││
+│ │ jwt_t…  │ eyJhbGciOiJIUzI1… │ line 203: token  │ HIGH   ││
+│ └─────────┴────────────────────┴──────────────────┴────────┘│
+│                                                             │
+│ 📄 config.js                            ⚠️ 3 findings       │
+│ ...                                                         │
+└─────────────────────────────────────────────────────────────┘
+```
 
 The report includes:
 - 📊 **Stats cards** — files scanned, total findings, critical & high-risk counts
