@@ -1,10 +1,72 @@
-API Agent — AI-Powered JS Security Audit Tool
+<div align="center">
+  <h1>🕵️ Js-Scanner</h1>
+  <p><strong>AI-Powered JavaScript Security Audit Tool</strong></p>
 
-API Agent is a JavaScript code audit tool designed for penetration testing. It automatically crawls all JS files from a target website, performs deep analysis using AI (DeepSeek / OpenAI / local models), accurately identifies high-value sensitive information (API endpoints, hardcoded secrets, JWT, phone numbers, ID numbers, internal IPs, etc.), and generates an interactive HTML report. It supports a post-audit dialog mode where you can continue asking questions or directly enter new URLs for seamless scanning, greatly improving penetration testing efficiency.
+  <p>
+    <img src="https://img.shields.io/badge/python-3.8+-blue?style=flat&logo=python&logoColor=white">
+    <img src="https://img.shields.io/badge/license-MIT-green?style=flat">
+    <img src="https://img.shields.io/badge/AI-DeepSeek%20%7C%20OpenAI%20%7C%20Ollama-orange?style=flat">
+    <img src="https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=flat">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat">
+  </p>
 
-## Configuration
+  <br>
 
-Create a `config.ini` file in the project root directory:
+  <img src="https://github.com/user-attachments/assets/50f77a03-3dff-4a04-b8f8-e31a59c8b790" width="700" alt="Js-Scanner Demo">
+
+  <br><br>
+  <p><b>🔍 Crawl · 🤖 Analyze · 📄 Report · 💬 Chat</b></p>
+  <p><i>Let AI uncover the gold in your JS files — quietly and efficiently.</i></p>
+</div>
+
+---
+
+## 📋 Overview
+
+Js-Scanner automates the nightmare of manually digging through JavaScript files for API endpoints, hardcoded secrets, JWTs, and sensitive data. It crawls every JS file on a target site, runs them through AI (DeepSeek / OpenAI / local models), and produces a beautiful interactive HTML report — then lets you keep asking questions in a chat-like dialog.
+
+```mermaid
+flowchart LR
+    A[🌐 Target URL] --> B[🕸️ Crawl JS Files]
+    B --> C[💾 Download Locally]
+    C --> D[🤖 AI Analysis]
+    D --> E[📄 HTML Report]
+    D --> F[💬 Dialog Mode]
+    F -->|New URL| B
+```
+
+---
+
+## ✨ Features
+
+| | |
+|---|---|
+| 🕸️ **Headless Crawler** | Automatically discovers every JS file using Playwright, bypasses SSL errors |
+| 🤖 **Multi-Model AI** | Supports DeepSeek, OpenAI, and local Ollama models |
+| 🔐 **Deep Scan** | Finds API endpoints, hardcoded keys, JWT tokens, secrets, PII, internal IPs |
+| 🖥️ **Interactive Report** | Expand/collapse files, one-click copy all findings or just API endpoints |
+| 💬 **Chat Mode** | Ask follow-up questions about findings — or paste a new URL to scan |
+| 📦 **Portable EXE** | Package as a single-file Windows executable with no Python needed |
+
+---
+
+## 🚀 Quick Start
+
+### 1. Install
+
+```bash
+# Clone
+git clone https://github.com/riteshekbote/Js-Scanner.git
+cd Js-Scanner
+
+# Dependencies
+pip install -r requirements.txt
+playwright install chromium
+```
+
+### 2. Configure
+
+Create `config.ini` in the project root:
 
 ```ini
 [AI]
@@ -21,118 +83,171 @@ cache_dir = js_cache
 auto_open_report = false
 ```
 
-| Config | Description |
-|--------|-------------|
-| `api_base` | OpenAI-compatible API service URL |
-| `api_key` | Your API key |
-| `model` | Model name (e.g. `deepseek-chat`, `gpt-4o-mini`, `llama3`) |
-| `temperature` | 0–1, lower = more deterministic (recommended 0.1 for audit) |
-| `max_tokens` | Max output tokens per analysis |
-| `min_confidence` | 0.0–1.0, findings below this threshold are filtered (0.0 keeps all) |
-| `report_dir` | HTML report output directory |
-| `cache_dir` | Downloaded JS file cache directory |
-| `auto_open_report` | Whether to auto-open the report (Windows) |
+### 3. Run 🎯
 
-### Switching AI Providers
-
-| Provider | `api_base` | `api_key` | `model` |
-|----------|-----------|-----------|---------|
-| DeepSeek | `https://api.deepseek.com` | Your DeepSeek key | `deepseek-chat` |
-| OpenAI | `https://api.openai.com/v1` | Your OpenAI key | `gpt-4o-mini` |
-| Local Ollama | `http://localhost:11434/v1` | Any string (e.g. `ollama`) | Your pulled model (e.g. `llama3`) |
-
-## Usage
-
-### Interactive Mode (Recommended)
+**Interactive mode** (recommended):
 
 ```bash
 python src/main.py
 ```
 
-- Enter a URL (e.g. `https://example.com`) to start the audit
-- After the audit completes, automatically enters **Dialog Mode**
-- In dialog mode:
-  - Ask follow-up questions: e.g. "Explain what that key in `config.js` is used for"
-  - Paste a new URL: directly enter `https://another-site.com`, and the AI will automatically scan the new site and update the context
-  - Enter `exit` to leave dialog mode and return to the main menu
-- Built-in commands: `help`, `clear`, `history`
-
-### Single Scan Mode
+**Single scan**:
 
 ```bash
 python src/main.py https://example.com
 ```
 
-Runs the full audit pipeline (crawl → download → analyze → generate report) and exits.<img width="1005" height="1173" alt="c6f2cd83a1c8b353b7e66433e1650424" src="https://github.com/user-attachments/assets/50f77a03-3dff-4a04-b8f8-e31a59c8b790" />
+---
 
-<img width="951" height="1155" alt="d3b1dc5da22e54e20afbd10b509e35a2" src="https://github.com/user-attachments/assets/07913ed4-367a-40ae-8e0b-5afa9a199c6f" />
+## ⚙️ Configuration Reference
 
-<img width="1788" height="396" alt="c7858762e4317ac30be0d0848a0d42bb" src="https://github.com/user-attachments/assets/ca892ab4-cfb6-46ec-9a04-cbc3f7f8d9c3" />
+| Config | Values | Description |
+|--------|--------|-------------|
+| `api_base` | URL | OpenAI-compatible API endpoint |
+| `api_key` | string | Your API key |
+| `model` | string | Model name (`deepseek-chat`, `gpt-4o-mini`, `llama3`, etc.) |
+| `temperature` | `0.0` – `1.0` | Lower = more deterministic output (audit: `0.1`) |
+| `max_tokens` | int | Max tokens per AI response |
+| `min_confidence` | `0.0` – `1.0` | Filters findings below this threshold (`0.0` = keep all) |
+| `report_dir` | path | Where HTML reports are saved |
+| `cache_dir` | path | Where downloaded JS files are cached |
+| `auto_open_report` | `true` / `false` | Auto-open report in browser (Windows) |
 
-### Package as Windows EXE
+### AI Provider Examples
+
+| Provider | `api_base` | `api_key` | `model` |
+|----------|------------|-----------|---------|
+| **DeepSeek** | `https://api.deepseek.com` | Your DeepSeek key | `deepseek-chat` |
+| **OpenAI** | `https://api.openai.com/v1` | Your OpenAI key | `gpt-4o-mini` |
+| **Ollama (local)** | `http://localhost:11434/v1` | Any string (`ollama`) | `llama3` / your model |
+
+---
+
+## 📊 Report Preview
+
+| Stat Card | Findings Table |
+|-----------|---------------|
+| <img src="https://github.com/user-attachments/assets/3c7a93a8-b3e1-45a6-b859-f751a4807f85" width="400"> | <img src="https://github.com/user-attachments/assets/dd25e004-1bc6-4157-87a4-e3b711ea9e50" width="400"> |
+
+The report includes:
+- 📊 **Stats cards** — files scanned, total findings, critical & high-risk counts
+- 🏷️ **Type distribution** — API endpoints, hardcoded secrets, PII, and more
+- 🔍 **Per-file drilldown** — type, leaked value, code context, risk level, fix suggestion, confidence %
+- 📋 **One-click copy** — all findings as TSV (paste into Excel) or just API endpoints
+
+---
+
+## 💬 Dialog Mode
+
+After an audit, you enter an interactive chat with the AI:
+
+```
+🔍 You: what does the secret_key in config.js do?
+🤖 AI: That looks like a Stripe API secret key starting with sk_live_. 
+         It's a production key — anyone with access can charge real cards.
+
+🔍 You: https://another-site.com
+🔄 New URL detected, starting audit...
+✅ New audit complete, context updated.
+```
+
+Commands: `exit` / `quit` / `help` / `clear` / `history`
+
+---
+
+## 📦 Packaging
+
+Build a standalone Windows EXE:
 
 ```bash
 python build_exe.py
 ```
 
-Generates `dist/API_Agent.exe`, a single-file executable that runs without a Python environment (the target machine must have Playwright browsers installed, or install via `playwright install chromium`).
+Output: `dist/API_Agent.exe` — no Python environment required.
 
-## Report Features
-
-The generated HTML report includes:
-
-- **Stats Cards**: scanned file count, total findings, critical/high risk counts
-- **Leak Type Distribution**: categorized by API endpoints, hardcoded secrets, personal info, etc.
-- **Per-File Detailed Findings**:
-  - Type (`api_endpoint`, `hardcoded_secret`, `phone_number`, etc.)
-  - Leaked content (**full original value** for easy copy-paste)
-  - Code context (line number and surrounding code)
-  - Risk level (`critical` / `high` / `medium` / `low`)
-  - Remediation suggestions
-  - Confidence percentage
-- **One-Click Copy**: copy all findings (tab-separated, pasteable into Excel) or just the API endpoint list (one URL per line)
-
-<img width="1614" height="1389" alt="55eb0608e502ace9f8189120ee372fa3" src="https://github.com/user-attachments/assets/3c7a93a8-b3e1-45a6-b859-f751a4807f85" />
-
-<img width="1433" height="741" alt="7cf9d09c2357cfec2ba4f5a2f0cdc342" src="https://github.com/user-attachments/assets/dd25e004-1bc6-4157-87a4-e3b711ea9e50" />
-
-## FAQ
-
-**1. SSL certificate errors?**  
-The tool already ignores certificate errors (Playwright and requests are both configured with `verify=False`). If errors persist, check that the target website is accessible.
-
-**2. AI analysis returns no results or the report is empty?**  
-- Check that `api_key` in `config.ini` is correct
-- Try setting `min_confidence` to `0.0`
-- Confirm the AI model supports OpenAI-compatible chat completion endpoints
-
-**3. How to reduce false positives?**  
-Increase `min_confidence` in `config.ini` (e.g. `0.7`). You can also modify the `is_likely_placeholder()` function in `ai_analyzer.py` to add more filtering rules.
-
-**4. How to scan a new website in dialog mode?**  
-Simply paste a new URL (starting with `https://`) directly in the dialog input. The Agent will automatically crawl the new site and update the context without needing to exit.
-
-**5. Can it analyze websites that require login?**  
-Currently no built-in login state. You can modify `crawler.py` to add `page.context.add_cookies([...])` after creating the page to inject cookies.
-
-**6. Can it analyze local JS files?**  
-The tool is designed for online websites. To analyze local files, you can enter the file path as a URL (not recommended), or extend the code yourself.
-
-## Advanced Customization
-
-- **Custom sensitive info rules**: Edit the `prompt` and `is_likely_placeholder()` function in `ai_analyzer.py`
-- **Adjust code truncation length**: Modify `max_chars` in `ai_analyzer.py` (default 300000 chars)
-- **Batch scanning**: Write a shell script to loop through `python src/main.py <URL>`
-
-## Disclaimer
-
-This tool is intended for **authorized security testing** and **self-code review only**. Do not use it on unauthorized systems. AI analysis results may contain false positives or false negatives; always manually verify critical findings.
-
-## License
-
-MIT
+> ⚠️ The target machine still needs Playwright browsers. Run `playwright install chromium` on it.
 
 ---
 
-**Project URL**: [https://github.com/tax3056/API-Agent_JSbot](https://github.com/tax3056/API-Agent_JSbot)  
-**Let AI uncover the gold in your JS files — quietly and efficiently.**
+## ❓ FAQ
+
+<details>
+<summary><b>🔴 SSL certificate errors?</b></summary>
+
+The tool already ignores SSL errors (`verify=False` in both Playwright and requests). If it still fails, check that the target site is actually reachable.
+</details>
+
+<details>
+<summary><b>⚪ AI returns nothing / report is empty?</b></summary>
+
+- Verify `api_key` in `config.ini`
+- Try `min_confidence = 0.0`
+- Make sure your model supports OpenAI-compatible chat completions
+</details>
+
+<details>
+<summary><b>🟡 Too many false positives?</b></summary>
+
+Raise `min_confidence` (e.g. `0.7`). You can also extend `is_likely_placeholder()` in `ai_analyzer.py`.
+</details>
+
+<details>
+<summary><b>🔄 Scan a new site mid-session?</b></summary>
+
+Just paste the URL into the dialog — the agent detects it, scans, and updates context automatically.
+</details>
+
+<details>
+<summary><b>🔐 Analyze authenticated/logged-in sites?</b></summary>
+
+No built-in auth yet. Modify `crawler.py` to inject cookies via `page.context.add_cookies([...])`.
+</details>
+
+<details>
+<summary><b>📁 Analyze local JS files?</b></summary>
+
+Designed for live websites. For local files, enter a file path as the URL (not recommended) or extend the code yourself.
+</details>
+
+---
+
+## 🧰 Advanced Customization
+
+- **Custom rules** — edit the `prompt` and `is_likely_placeholder()` in `ai_analyzer.py`
+- **Truncation** — change `max_chars` in `ai_analyzer.py` (default: 300,000 chars)
+- **Batch scans** — loop in a shell script:
+  ```bash
+  for url in $(cat targets.txt); do python src/main.py "$url"; done
+  ```
+
+---
+
+## 🧯 Tech Stack
+
+| Component | Library |
+|-----------|---------|
+| 🤖 AI Client | [`openai`](https://pypi.org/project/openai/) |
+| 🕸️ Headless Browser | [`playwright`](https://playwright.dev/python/) |
+| 📄 Report Engine | [`jinja2`](https://pypi.org/project/Jinja2/) |
+| 🌐 HTTP Client | [`requests`](https://pypi.org/project/requests/) |
+
+---
+
+## ⚠️ Disclaimer
+
+> This tool is for **authorized security testing** and **self code review only**.  
+> **Do not** use it on systems you do not own or have explicit permission to test.  
+> AI analysis may produce false positives or miss real issues — **always manually verify critical findings**.
+
+---
+
+## 📄 License
+
+[MIT](LICENSE) © riteshekbote
+
+---
+
+<div align="center">
+  <p>⭐ Found this useful? Give it a star!</p>
+  <p><a href="https://github.com/riteshekbote/Js-Scanner/issues">Report Bug</a> · <a href="https://github.com/riteshekbote/Js-Scanner/issues">Request Feature</a></p>
+</div>
